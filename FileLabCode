@@ -1,0 +1,142 @@
+using System;
+using System.IO;
+
+namespace bigLab
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string userChoice = "";
+            while(userChoice != "4")
+            {
+                DisplayMenu();
+                userChoice = Console.ReadLine();
+                RouteEm(userChoice);
+
+            }
+        
+        }
+
+        static void DisplayMenu()
+        {
+            System.Console.WriteLine("1. Encode\n2. Decode\n3. Word Count\n4. Exit");
+        }
+
+        static void RouteEm(string userChoice)
+        {
+            switch(userChoice)
+            {
+                case "1":
+                    MoveForward();
+                break;
+
+                case "2":
+                    MoveBackward();
+                break;
+
+                case "3":
+                    WordCount();
+                break;
+
+                case "4":
+                    System.Console.WriteLine("I bid you adieu good sir");
+                break;
+
+                default:
+                    System.Console.WriteLine("Invalid Choice");
+                break;
+
+            }
+        }
+        static void MoveForward()
+        {
+            System.Console.WriteLine("Welcome to the Encode Method");
+            Encode();
+        }
+
+        static void MoveBackward()
+        {
+            System.Console.WriteLine("Welcome to the Decode Method");
+            Encode();
+        }
+
+        static void Encode()
+        {
+            System.Console.WriteLine("Please enter the name of the input file");
+            string inputFile = Console.ReadLine();
+
+            System.Console.WriteLine("Please enter the name of the output file");
+            string outputFile = Console.ReadLine();
+
+            EncodeIt(inputFile, outputFile);
+        }
+
+        static void EncodeIt(string inputFile, string outputFile)
+        {
+            StreamReader inFile = new StreamReader(inputFile);
+            StreamWriter outFile = new StreamWriter(outputFile);
+            string line = inFile.ReadLine();
+
+            while(line != null)
+            {
+                outFile.WriteLine(TransformIt(line));
+                line = inFile.ReadLine();
+            }
+
+            inFile.Close();
+            outFile.Close();
+
+        }
+
+        static string TransformIt(string line)
+        {
+            string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            line = line.ToUpper();
+            string newLine = "";
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                int found = -1;
+                for (int j = 0; j < letters.Length; j++)
+                {
+                    if(letters[j] == line[i])
+                    {
+                        found = j;
+                    }
+                }
+                if(found == -1)
+                {
+                    newLine += line[i];
+                }
+                else
+                {
+                    newLine += letters[(found + 13) % 26];
+                }
+            }
+            return newLine;
+        }
+        
+        static void WordCount()
+        {
+            System.Console.WriteLine("Please enter file name");
+            string fileName = Console.ReadLine();
+
+            StreamReader inFile = new StreamReader(fileName);
+            string line = inFile.ReadLine();
+
+            int count = 0;
+
+            while(line != null)
+            {
+                string[] temp = line.Split(" ");
+                count += temp.Length;
+
+                line = inFile.ReadLine();
+
+            }
+            inFile.Close();
+            System.Console.WriteLine($"File has {count} words");
+        }
+    }
+}
